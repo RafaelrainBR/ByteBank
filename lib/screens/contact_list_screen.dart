@@ -1,5 +1,6 @@
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
+import 'package:bytebank/screens/contact_edit.dart';
 import 'package:bytebank/screens/contact_form.dart';
 import 'package:flutter/material.dart';
 
@@ -29,9 +30,33 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
                   return _ContactCard(
                     contact: contact,
-                    onDelete: () => setState(() {
-                      _contactDao.delete(contact);
-                    }),
+                    deleteAction: () => showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text("Confirmation"),
+                        content: Text("Are you sure to delete the contact?"),
+                        actions: [
+                          FlatButton(
+                            child: const Text("Cancel"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          FlatButton(
+                            child: const Text("Confirm"),
+                            onPressed: () => setState(() {
+                              _contactDao.delete(contact);
+                              sendSnackMessage(context,
+                                  "You have sucessfully deleted the contact ${contact.name}");
+                              Navigator.pop(context);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                    editAction: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => ContactEditScreen(contact)),
+                    ).then((value) => setState(() {})),
                   );
                 },
               );
@@ -85,9 +110,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 class _ContactCard extends StatelessWidget {
   final Contact contact;
-  final Function onDelete;
+  final Function deleteAction;
+  final Function editAction;
 
-  const _ContactCard({Key key, this.contact, this.onDelete}) : super(key: key);
+  const _ContactCard(
+      {Key key, this.contact, this.deleteAction, this.editAction})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +124,8 @@ class _ContactCard extends StatelessWidget {
         title: Text(contact.name, style: TextStyle(fontSize: 24)),
         subtitle: Text("${contact.account}", style: TextStyle(fontSize: 16)),
         trailing: _PopUpMenu(
-          onDelete: onDelete,
+          deleteAction: deleteAction,
+          editAction: editAction,
         ),
       ),
     );
@@ -104,16 +133,25 @@ class _ContactCard extends StatelessWidget {
 }
 
 class _PopUpMenu extends StatelessWidget {
-  final Function onDelete;
+  final Function deleteAction;
+  final Function editAction;
 
-  _PopUpMenu({this.onDelete});
+  _PopUpMenu({this.deleteAction, this.editAction});
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      onSelected: (value) => onDelete,
+      onSelected: doSelect,
       itemBuilder: (context) => <PopupMenuEntry<String>>[
         const PopupMenuItem(
+          value: "Edit",
+          child: ListTile(
+            title: Text("Edit"),
+            leading: Icon(Icons.edit),
+          ),
+        ),
+        const PopupMenuItem(
+          value: "Delete",
           child: ListTile(
             title: Text("Delete"),
             leading: Icon(Icons.delete),
@@ -121,5 +159,16 @@ class _PopUpMenu extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void doSelect(String value) {
+    switch (value) {
+      case "Delete":
+        deleteAction();
+        break;
+      case "Edit":
+        editAction();
+        break;
+    }
   }
 }

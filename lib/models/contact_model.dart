@@ -1,7 +1,7 @@
 class Contact {
   int id;
-  final String name;
-  final int account;
+  String name;
+  int account;
 
   Contact(this.name, this.account, {this.id});
 
@@ -12,6 +12,7 @@ class Contact {
 
   Map<String, dynamic> toJson() {
     final map = Map<String, dynamic>();
+    if (id != null) map['id'] = id;
     map['name'] = name;
     map['account_number'] = account;
 

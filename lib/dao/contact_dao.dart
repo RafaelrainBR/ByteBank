@@ -16,7 +16,15 @@ class ContactDao {
   Future<int> save(Contact contact) async {
     final db = await getDatabase();
 
-    return db.insert(_tableName, contact.toJson());
+    if (contact.id == null) {
+      return db.insert(_tableName, contact.toJson());
+    } else {
+      return db.rawUpdate('''
+        UPDATE $_tableName
+        SET $_name=?, $_accountNumber=?
+        WHERE $_id = ?
+      ''', [contact.name, contact.account, contact.id]);
+    }
   }
 
   Future<int> delete(Contact contact) async {
