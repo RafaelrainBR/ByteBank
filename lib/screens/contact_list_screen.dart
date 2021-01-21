@@ -100,7 +100,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   void sendSnackMessage(context, text) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
       ),
