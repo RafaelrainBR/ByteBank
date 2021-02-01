@@ -1,4 +1,6 @@
 import 'package:bytebank/screens/contact_list/contact_list_screen.dart';
+import 'package:bytebank/screens/transaction_list/transactions_list.dart';
+
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,19 +18,24 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Image.asset("images/bytebank_logo.png"),
           ),
-          Row(
-            children: [
-              _FeatureItem(
-                name: "Transfer",
-                icon: Icons.people,
-                onClick: () => _showContactsList(context),
-              ),
-              _FeatureItem(
-                name: "Transaction Feed",
-                icon: Icons.description,
-              ),
-            ],
-          ),
+          Container(
+            height: 120,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                _FeatureItem(
+                  "Transfer",
+                  Icons.people,
+                  onClick: () => _showContactsList(context),
+                ),
+                _FeatureItem(
+                  "Transaction Feed",
+                  Icons.description,
+                  onClick: () => _showTransactionList(context),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -39,11 +46,18 @@ class HomeScreen extends StatelessWidget {
       MaterialPageRoute(builder: (ctx) => ContactsScreen()),
     );
   }
+
+  void _showTransactionList(context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (ctx) => TransactionsList()),
+    );
+  }
 }
 
 class _FeatureItem extends StatelessWidget {
-  const _FeatureItem({Key key, this.name, this.icon, this.onClick})
-      : super(key: key);
+  const _FeatureItem(this.name, this.icon, {@required this.onClick})
+      : assert(icon != null),
+        assert(onClick != null);
 
   final IconData icon;
   final String name;
@@ -58,7 +72,6 @@ class _FeatureItem extends StatelessWidget {
         child: InkWell(
           child: Container(
             padding: EdgeInsets.all(8),
-            height: 100,
             width: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

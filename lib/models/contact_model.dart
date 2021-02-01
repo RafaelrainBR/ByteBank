@@ -10,20 +10,14 @@ class Contact {
     return "Contact{id: $id, name: $name, account: $account}";
   }
 
-  Map<String, dynamic> toJson() {
-    final map = Map<String, dynamic>();
-    if (id != null) map['id'] = id;
-    map['name'] = name;
-    map['account_number'] = account;
+  Contact.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        account = json['accountNumber'],
+        id = json['id'];
 
-    return map;
-  }
-
-  static Contact fromJson(Map<String, dynamic> map) {
-    return Contact(
-      map['name'],
-      map['account_number'],
-      id: map['id'],
-    );
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'accountNumber': account,
+      };
 }

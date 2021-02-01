@@ -1,7 +1,11 @@
+import 'package:bytebank/components/loading_component.dart';
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
+
 import 'package:bytebank/screens/contact_list/creation/contact_form.dart';
 import 'package:bytebank/screens/contact_list/option/contact_edit.dart';
+import 'package:bytebank/screens/contact_list/transaction/transaction_form.dart';
+
 import 'package:flutter/material.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -56,21 +60,19 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (ctx) => ContactEditScreen(contact)),
-                    ).then((value) => setState(() {})),
+                    ).then(
+                      (value) => setState(() {}),
+                    ),
+                    transferAction: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => TransactionForm(contact)),
+                    ),
                   );
                 },
               );
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    Text('Loading'),
-                  ],
-                ),
-              );
+              return LoadingWidget();
             default:
               break;
           }
@@ -112,9 +114,14 @@ class _ContactCard extends StatelessWidget {
   final Contact contact;
   final Function deleteAction;
   final Function editAction;
+  final Function transferAction;
 
   const _ContactCard(
-      {Key key, this.contact, this.deleteAction, this.editAction})
+      {Key key,
+      this.contact,
+      this.deleteAction,
+      this.editAction,
+      this.transferAction})
       : super(key: key);
 
   @override
@@ -123,10 +130,7 @@ class _ContactCard extends StatelessWidget {
       child: ListTile(
         title: Text(contact.name, style: TextStyle(fontSize: 24)),
         subtitle: Text("${contact.account}", style: TextStyle(fontSize: 16)),
-        trailing: _PopUpMenu(
-          deleteAction: deleteAction,
-          editAction: editAction,
-        ),
+        trailing: _PopUpMenu(deleteAction, editAction, transferAction),
       ),
     );
   }
@@ -135,14 +139,22 @@ class _ContactCard extends StatelessWidget {
 class _PopUpMenu extends StatelessWidget {
   final Function deleteAction;
   final Function editAction;
+  final Function transferAction;
 
-  _PopUpMenu({this.deleteAction, this.editAction});
+  _PopUpMenu(this.deleteAction, this.editAction, this.transferAction);
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      onSelected: doSelect,
+      onSelected: _doSelect,
       itemBuilder: (context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem(
+          value: "Transfer",
+          child: ListTile(
+            title: Text("Transfer"),
+            leading: Icon(Icons.account_balance_wallet),
+          ),
+        ),
         const PopupMenuItem(
           value: "Edit",
           child: ListTile(
@@ -161,8 +173,11 @@ class _PopUpMenu extends StatelessWidget {
     );
   }
 
-  void doSelect(String value) {
+  void _doSelect(String value) {
     switch (value) {
+      case "Transfer":
+        transferAction();
+        break;
       case "Delete":
         deleteAction();
         break;
