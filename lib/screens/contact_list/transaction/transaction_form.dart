@@ -1,8 +1,6 @@
 import 'package:bytebank/models/contact_model.dart';
 import 'package:bytebank/models/transaction_model.dart';
-
 import 'package:bytebank/web/webclients/transactions_webclient.dart';
-
 import 'package:flutter/material.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -59,7 +57,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 padding: const EdgeInsets.only(top: 16.0),
                 child: SizedBox(
                   width: double.maxFinite,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: Text('Transfer'),
                     onPressed: () {
                       final double value =

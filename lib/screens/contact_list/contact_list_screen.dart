@@ -40,11 +40,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         title: Text("Confirmation"),
                         content: Text("Are you sure to delete the contact?"),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: const Text("Cancel"),
                             onPressed: () => Navigator.pop(context),
                           ),
-                          FlatButton(
+                          TextButton(
                             child: const Text("Confirm"),
                             onPressed: () => setState(() {
                               _contactDao.delete(contact);
@@ -102,7 +102,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   void sendSnackMessage(context, text) {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
       ),

@@ -1,6 +1,5 @@
 import 'package:bytebank/dao/contact_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -160,11 +159,11 @@ class __EditingDialogState<T> extends State<_EditingDialog<T>> {
         keyboardType: _onlyNumbers() ? TextInputType.number : null,
       ),
       actions: [
-        FlatButton(
+        TextButton(
           child: const Text("Cancel"),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
+        TextButton(
           child: const Text("Confirm"),
           onPressed: () {
             final value = _textController.text;

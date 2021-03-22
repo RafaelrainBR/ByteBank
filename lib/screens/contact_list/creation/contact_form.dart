@@ -1,5 +1,4 @@
 import 'package:bytebank/models/contact_model.dart';
-
 import 'package:flutter/material.dart';
 
 class ContactForm extends StatefulWidget {
@@ -39,7 +38,7 @@ class _ContactFormState extends State<ContactForm> {
             padding: EdgeInsets.only(top: 16),
             child: SizedBox(
               width: double.maxFinite,
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text("Create"),
                 onPressed: () {
                   final name = _nameController.text;
